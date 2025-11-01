@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小学学习资源导航</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .nav-tab {
+            background: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .nav-tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+        
+        .nav-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .teacher-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transition: transform 0.3s;
+        }
+        
+        .teacher-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .teacher-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .teacher-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .teacher-name {
+            font-size: 1.8em;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .section-title {
+            color: #667eea;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 15px 0 10px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title::before {
+            content: '▶';
+            margin-right: 8px;
+        }
+        
+        .content-text {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        
+        .links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .link-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .link-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .toggle-btn {
+            background: #f0f0f0;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: all 0.3s;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+        
+        .toggle-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .toggle-btn span {
+            margin-right: 8px;
+            transition: transform 0.3s;
+        }
+        
+        .collection-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            margin-top: 10px;
+        }
+        
+        .collection-content.show {
+            max-height: 2000px;
+            transition: max-height 0.5s ease-in;
+        }
+        
+        .collection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        
+        .collection-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            font-size: 0.95em;
+            color: #555;
+        }
+        
+        .collection-item strong {
+            color: #667eea;
+        }
+        
+        .teacher-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .guide-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .guide-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .guide-steps {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .step {
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+        
+        .external-link {
+            background: white;
+            color: #667eea;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+        
+        .external-link h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 20px 15px;
+                margin-bottom: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 8px;
+            }
+            
+            .subtitle {
+                font-size: 0.95em;
+            }
+            
+            .nav-tabs {
+                gap: 8px;
+                margin-bottom: 20px;
+            }
+            
+            .nav-tab {
+                padding: 12px 15px;
+                font-size: 0.9em;
+                flex: 1 1 calc(50% - 8px);
+                min-width: calc(50% - 8px);
+            }
+            
+            .teacher-card {
+                padding: 20px 15px;
+                margin-bottom: 20px;
+            }
+            
+            .teacher-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .teacher-number {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2em;
+            }
+            
+            .teacher-name {
+                font-size: 1.2em;
+            }
+            
+            .section-title {
+                font-size: 1.1em;
+                margin-top: 15px;
+            }
+            
+            .content-text {
+                font-size: 0.95em;
+                line-height: 1.7;
+            }
+            
+            .links {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .link-btn {
+                padding: 12px 20px;
+                font-size: 0.95em;
+                width: 100%;
+                text-align: center;
+            }
+            
+            .toggle-btn {
+                padding: 12px 15px;
+                font-size: 0.95em;
+            }
+            
+            .collection-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                padding: 10px;
+            }
+            
+            .collection-item {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+            
+            /* 宇神奥数卡片网格 */
+            div[style*="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))"],
+            div[style*="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))"],
+            div[style*="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr))"] {
+                grid-template-columns: 1fr !important;
+            }
+            
+            /* 国家同步课程卡片 */
+            .external-link {
+                padding: 15px;
+            }
+            
+            .external-link h3 {
+                font-size: 1.3em;
+            }
+            
+            /* 学习指南卡片 */
+            .guide-box {
+                padding: 20px 15px;
+            }
+            
+            .guide-title {
+                font-size: 1.3em;
+            }
+            
+            .guide-steps {
+                padding: 12px;
+            }
+            
+            .step {
+                font-size: 1em;
+            }
+            
+            /* 资源统计卡片 */
+            div[style*="display: grid"] {
+                gap: 10px !important;
+            }
+            
+            /* 课程列表文件大小显示优化 */
+            .collection-item {
+                word-break: break-word;
+                line-height: 1.6;
+            }
+        }
+        
+        /* 小屏手机适配 (320px-480px) */
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+            
+            header {
+                padding: 15px 10px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            .subtitle {
+                font-size: 0.85em;
+            }
+            
+            .nav-tab {
+                padding: 10px 12px;
+                font-size: 0.85em;
+            }
+            
+            .teacher-card {
+                padding: 15px 10px;
+            }
+            
+            .teacher-name {
+                font-size: 1.1em;
+            }
+            
+            .content-text {
+                font-size: 0.9em;
+            }
+            
+            .link-btn {
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+            
+            .collection-item {
+                font-size: 0.85em;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 小学学习资源导航</h1>
+            <p class="subtitle">名师精选 · 系统学习 · 免费资源</p>
+        </header>
+        
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('baidu')">🎯 宇神奥数全集</button>
+            <button class="nav-tab" onclick="showSection('teachers')">📺 B站免费课程</button>
+            <button class="nav-tab" onclick="showSection('guide')">📚 学习指南</button>
+            <button class="nav-tab" onclick="showSection('resources')">📖 国家同步课程</button>
+        </div>
+        
+        <!-- 奥数精选板块 -->
+        <div id="teachers" class="content-section">
+            <div class="teacher-card">
+                <div class="teacher-header">
+                    <div class="teacher-number">1</div>
+                    <div class="teacher-name">王乃向（又名「向爸」）</div>
+                </div>
+                
+                <div class="section-title">代表系列</div>
+                <p class="content-text">《图说数学·小学奥数 112 讲》</p>
+                
+                <div class="section-title">精彩看点</div>
+                <p class="content-text">
+                    • 全程<span class="highlight">「一支粉笔+一张图」</span>把行程、鸡兔、牛吃草全部画成线段或面积模型，孩子一眼看懂数量关系<br>
+                    • 每题先让孩子「暂停思考 30 秒」，再给出<span class="highlight">「三步拆题法」</span>，节奏适合自学
+                </p>
+                
+                <div class="section-title">风评</div>
+                <p class="content-text">
+                    B 站单集播放 30 万+，弹幕关键词<span class="highlight">「清晰」「秒懂」</span>出现频率最高；家长群转存率 93%
+                </p>
+                
+                <div class="section-title">直达链接</div>
+                <div class="links">
+                    <a href="https://www.bilibili.com/video/BV1rP4y1h7Z5" target="_blank" class="link-btn">📺 初级1-50集</a>
+                    <a href="https://www.bilibili.com/video/BV1RQ4y1z7Gn" target="_blank" class="link-btn">📺 初级51-112集</a>
+                </div>
+                <button class="toggle-btn" onclick="toggleCollection('collection1')">
+                    <span id="icon1">▶</span> 查看合集目录
+                </button>
+                <div id="collection1" class="collection-content">
+                    <div class="collection-grid">
+                        <div class="collection-item">第1-10讲：基础计算与速算技巧</div>
+                        <div class="collection-item">第11-20讲：找规律与数列</div>
+                        <div class="collection-item">第21-30讲：简单应用题入门</div>
+                        <div class="collection-item">第31-40讲：图形认知与计数</div>
+                        <div class="collection-item">第41-50讲：逻辑推理基础</div>
+                        <div class="collection-item">第51-60讲：行程问题图解</div>
+                        <div class="collection-item">第61-70讲：鸡兔同笼模型</div>
+                        <div class="collection-item">第71-80讲：盈亏问题</div>
+                        <div class="collection-item">第81-90讲：牛吃草问题</div>
+                        <div class="collection-item">第91-100讲：工程问题</div>
+                        <div class="collection-item">第101-112讲：综合应用与提高</div>
+                    </div>
+                </div>
+                <p class="content-text" style="margin-top: 10px; color: #888; font-size: 0.9em;">
+                    💡 提示：视频简介中附带PDF讲义下载
+                </p>
+            </div>
+            
+            <div class="teacher-card">
+                <div class="teacher-header">
+                    <div class="teacher-number">2</div>
+                    <div class="teacher-name">乐乐课堂 - 高思数学系列（动画精讲）</div>
+                </div>
+                
+                <div class="section-title">代表系列</div>
+                <p class="content-text">《高思竞赛数学课本》1-6年级动画讲解（完整体系）</p>
+                
+                <div class="section-title">精彩看点</div>
+                <p class="content-text">
+                    • 高思教育官方出品，基于《高思竞赛数学课本》完整体系，<span class="highlight">每个知识点2-3分钟动画讲解</span>，短小精悍<br>
+                    • 采用动画+配音形式，<span class="highlight">画面精美、节奏紧凑</span>，特别适合低年级孩子的注意力特点<br>
+                    • 1-6年级全覆盖，每个年级40+章节，<span class="highlight">知识点讲解完整、循序渐进</span>，适合自学和课后巩固
+                </p>
+                
+                <div class="section-title">风评</div>
+                <p class="content-text">
+                    B站播放量累计千万+，被誉为「小学奥数自学神器」；内容体系完整、讲解清晰，家长反馈「孩子看得进去、学得明白」
+                </p>
+                
+                <div class="section-title">课程视频</div>
+                <div class="links">
+                    <a href="https://search.bilibili.com/all?keyword=乐乐课堂%20高思数学" target="_blank" class="link-btn">📺 B站搜索乐乐课堂</a>
+                    <a href="https://search.bilibili.com/all?keyword=乐乐课堂%20小学奥数" target="_blank" class="link-btn">📺 小学奥数动画</a>
+                </div>
+                
+                <button class="toggle-btn" onclick="toggleCollection('collection2')">
+                    <span id="icon2">▶</span> 查看各年级内容与特色
+                </button>
+                <div id="collection2" class="collection-content">
+                    <div class="collection-grid">
+                        <div class="collection-item"><strong>一年级（43讲）</strong></div>
+                        <div class="collection-item">• 数的认识、加减法、找规律、图形认知</div>
+                        <div class="collection-item">• 特点：趣味性强，培养数学兴趣</div>
+                        
+                        <div class="collection-item"><strong>二年级（43讲）</strong></div>
+                        <div class="collection-item">• 乘法口诀、简单应用题、找规律进阶</div>
+                        <div class="collection-item">• 特点：建立基础思维模型</div>
+                        
+                        <div class="collection-item"><strong>三年级（43讲）</strong></div>
+                        <div class="collection-item">• 等差数列、幻方、页码、周期、鸡兔同笼入门</div>
+                        <div class="collection-item">• 特点：奥数核心专题入门，适合兴趣培养</div>
+                        
+                        <div class="collection-item"><strong>四年级（43讲）</strong></div>
+                        <div class="collection-item">• 行程问题、几何图形、数论基础、计数问题</div>
+                        <div class="collection-item">• 特点：知识点系统化，难度适中</div>
+                        
+                        <div class="collection-item"><strong>五年级（43讲）</strong></div>
+                        <div class="collection-item">• 分数应用题、工程问题、容斥原理、比例问题</div>
+                        <div class="collection-item">• 特点：深化专题训练，接轨小升初</div>
+                        
+                        <div class="collection-item"><strong>六年级（43讲）</strong></div>
+                        <div class="collection-item">• 百分比应用、经济问题、综合复习、小升初冲刺</div>
+                        <div class="collection-item">• 特点：综合应用，考试技巧提升</div>
+                        
+                        <div class="collection-item"><strong>学习优势</strong></div>
+                        <div class="collection-item">✓ 时间短：每个视频2-3分钟，碎片时间可学</div>
+                        <div class="collection-item">✓ 内容全：1-6年级完整体系，258讲全覆盖</div>
+                        <div class="collection-item">✓ 易理解：动画演示，抽象概念形象化</div>
+                        <div class="collection-item">✓ 免费看：B站完整资源，无需付费</div>
+                        
+                        <div class="collection-item"><strong>使用建议</strong></div>
+                        <div class="collection-item">① 适合1-3年级入门，培养兴趣阶段</div>
+                        <div class="collection-item">② 可配合王乃向老师课程巩固知识点</div>
+                        <div class="collection-item">③ 每天学习3-5个视频，坚持每天进步</div>
+                        <div class="collection-item">④ 看完视频后务必练习对应习题</div>
+                    </div>
+                </div>
+                <p class="content-text" style="margin-top: 10px; color: #888; font-size: 0.9em;">
+                    💡 提示：乐乐课堂是高思教育官方出品，内容与《高思竞赛数学课本》完全对应
+                </p>
+            </div>
+        </div>
+        
+        <!-- 学习指南板块 -->
+        <!-- 学习指南板块 -->
+        <div id="guide" class="content-section">
+            <!-- 顶部说明卡片 -->
+            <div class="teacher-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <h1 style="color: white; margin-bottom: 15px; text-align: center;">📚 小学数学全科学习指南</h1>
+                <p style="font-size: 1.1em; line-height: 1.8; text-align: center;">
+                    基于本站三大资源体系,为您制定科学、系统的学习路径
+                </p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 2em; margin-bottom: 5px;">📖</div>
+                        <div style="font-weight: bold;">国家同步课程</div>
+                        <div style="font-size: 0.9em; margin-top: 5px;">打好基础</div>
+                </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 2em; margin-bottom: 5px;">🎯</div>
+                        <div style="font-weight: bold;">宇神奥数全集</div>
+                        <div style="font-size: 0.9em; margin-top: 5px;">系统提升</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 2em; margin-bottom: 5px;">📺</div>
+                        <div style="font-weight: bold;">B站免费课程</div>
+                        <div style="font-size: 0.9em; margin-top: 5px;">查漏补缺</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 三年级学习路径 -->
+            <div class="teacher-card">
+                <div class="teacher-header">
+                    <div class="teacher-number" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">3年级</div>
+                    <div class="teacher-name">三年级全科学习路径</div>
+                </div>
+                
+                <div class="section-title">📖 阶段目标</div>
+                <p class="content-text">
+                    <strong>校内:</strong> 扎实掌握三年级数学同步课程,建立基础<br>
+                    <strong>校外:</strong> 奥数思维启蒙,培养兴趣,初步接触经典题型
+                </p>
+                
+                <div class="section-title">📚 推荐学习路径</div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                    <h4 style="color: #667eea; margin-bottom: 15px;">路径一: 校内为主 + 兴趣培养</h4>
+                    <div style="margin-left: 20px; line-height: 2;">
+                        <p><strong>1️⃣ 每日同步课程</strong> (30分钟)</p>
+                        <p style="margin-left: 20px; color: #666;">→ 使用<span class="highlight">国家智慧教育平台</span>同步学习教材内容</p>
+                        
+                        <p><strong>2️⃣ 周末奥数启蒙</strong> (1小时)</p>
+                        <p style="margin-left: 20px; color: #666;">→ 观看<span class="highlight">B站-乐乐课堂</span>高思数学动画(2-3分钟/集,轻松有趣)</p>
+                        <p style="margin-left: 20px; color: #666;">→ 推荐章节: 找规律、简单应用题、图形认知</p>
+            </div>
+            
+                    <h4 style="color: #28a745; margin: 20px 0 15px 0;">路径二: 系统奥数培养</h4>
+                    <div style="margin-left: 20px; line-height: 2;">
+                        <p><strong>1️⃣ 宇神奥数体系学习</strong> (每周2-3讲)</p>
+                        <p style="margin-left: 20px; color: #666;">→ <span class="highlight">宇神高思导引刷题班-三年级</span> (23讲完整体系)</p>
+                        <p style="margin-left: 20px; color: #666;">→ 每讲包含视频讲解 + PDF讲义 + 配套练习</p>
+                        
+                        <p><strong>2️⃣ B站辅助理解</strong></p>
+                        <p style="margin-left: 20px; color: #666;">→ 遇到难题时,用<span class="highlight">王乃向图说数学</span>查找对应专题</p>
+                        <p style="margin-left: 20px; color: #666;">→ "一支粉笔+一张图"的讲解方式更直观</p>
+                    </div>
+                </div>
+                
+                <div class="section-title">⏰ 时间分配建议</div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                    <div class="collection-item">📖 同步课程: 30分钟/天</div>
+                    <div class="collection-item">🎯 奥数学习: 2-3次/周,1小时/次</div>
+                    <div class="collection-item">📺 B站辅助: 随时查漏补缺</div>
+                    <div class="collection-item">✏️ 练习巩固: 30分钟/次</div>
+                </div>
+            </div>
+            
+            <!-- 四年级学习路径 -->
+            <div class="teacher-card">
+                <div class="teacher-header">
+                    <div class="teacher-number" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">4年级</div>
+                    <div class="teacher-name">四年级全科学习路径</div>
+                </div>
+                
+                <div class="section-title">📖 阶段目标</div>
+                <p class="content-text">
+                    <strong>校内:</strong> 掌握四年级核心知识点,为高年级打基础<br>
+                    <strong>校外:</strong> 系统学习奥数,建立完整知识体系,冲刺校内满分
+                </p>
+                
+                <div class="section-title">📚 推荐学习路径</div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                    <h4 style="color: #667eea; margin-bottom: 15px;">🎯 双轨并行学习法</h4>
+                    <div style="margin-left: 20px; line-height: 2;">
+                        <p><strong>1️⃣ 宇神奥数全年班</strong> (40讲系统课程)</p>
+                        <p style="margin-left: 20px; color: #666;">→ <span class="highlight">四年级奥数思维全年</span> - 暑秋寒春完整体系</p>
+                        <p style="margin-left: 20px; color: #666;">→ 按学期进度学习,每周2讲</p>
+                        
+                        <p><strong>2️⃣ 高思导引刷题班</strong> (24讲专题强化)</p>
+                        <p style="margin-left: 20px; color: #666;">→ <span class="highlight">四年级高思导引刷题班</span> - 针对性提升</p>
+                        <p style="margin-left: 20px; color: #666;">→ 用于巩固和拓展全年班学习内容</p>
+                        
+                        <p><strong>3️⃣ 国家同步课程</strong> (校内保障)</p>
+                        <p style="margin-left: 20px; color: #666;">→ 确保校内成绩稳定,每天30分钟同步学习</p>
+                        
+                        <p><strong>4️⃣ B站补充资源</strong> (灵活使用)</p>
+                        <p style="margin-left: 20px; color: #666;">→ <span class="highlight">王乃向图说数学</span> - 行程、鸡兔同笼等专题精讲</p>
+                        <p style="margin-left: 20px; color: #666;">→ <span class="highlight">乐乐课堂</span> - 快速复习知识点</p>
+                    </div>
+                </div>
+                
+                <div class="section-title">📅 学期学习计划</div>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <thead>
+                        <tr style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+                            <th style="padding: 12px; text-align: left;">学期</th>
+                            <th style="padding: 12px; text-align: left;">主线课程</th>
+                            <th style="padding: 12px; text-align: left;">辅助资源</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background: #fff;">
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">暑假</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">奥数思维全年班 (暑期部分)</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">B站专题补充</td>
+                        </tr>
+                        <tr style="background: #f8f9fa;">
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">秋季</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">全年班 + 高思导引</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">国家平台同步</td>
+                        </tr>
+                        <tr style="background: #fff;">
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">寒假</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">奥数思维全年班 (寒假部分)</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">专题突破</td>
+                        </tr>
+                        <tr style="background: #f8f9fa;">
+                            <td style="padding: 12px;">春季</td>
+                            <td style="padding: 12px;">全年班 + 高思导引</td>
+                            <td style="padding: 12px;">总复习</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 五年级学习路径 -->
+            <div class="teacher-card">
+                <div class="teacher-header">
+                    <div class="teacher-number" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">5年级</div>
+                    <div class="teacher-name">五年级全科学习路径</div>
+                </div>
+                
+                <div class="section-title">📖 阶段目标</div>
+                <p class="content-text">
+                    <strong>校内:</strong> 夯实基础,准备小升初<br>
+                    <strong>校外:</strong> 专题深化,接触竞赛题型,提升综合能力
+                </p>
+                
+                <div class="section-title">📚 推荐学习路径</div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                    <h4 style="color: #667eea; margin-bottom: 15px;">🏆 S+班 + 专题模块学习法</h4>
+                    <div style="margin-left: 20px; line-height: 2;">
+                        <p><strong>1️⃣ 核心主线</strong></p>
+                        <p style="margin-left: 20px; color: #666;">→ <span class="highlight">五年级奥数思维全年S+班</span> (54讲)</p>
+                        <p style="margin-left: 20px; color: #666;">→ <span class="highlight">五年级高思导引刷题班</span> (24讲)</p>
+                        
+                        <p><strong>2️⃣ 专题强化</strong></p>
+                        <p style="margin-left: 20px; color: #666;">→ <span class="highlight">数论模块</span> (18讲) - 质数、因数、整除专题</p>
+                        <p style="margin-left: 20px; color: #666;">→ <span class="highlight">行程专题</span> (15讲) - 相遇、追及、流水行船</p>
+                        <p style="margin-left: 20px; color: #666;">→ <span class="highlight">方程体系</span> (10讲) - 列方程解应用题</p>
+                        <p style="margin-left: 20px; color: #666;">→ <span class="highlight">几何模型</span> (5讲) - 面积、立体图形</p>
+                        
+                        <p><strong>3️⃣ B站补充</strong></p>
+                        <p style="margin-left: 20px; color: #666;">→ 王乃向专题精讲 - 深度理解难点</p>
+                    </div>
+                </div>
+                
+                <div class="section-title">🎯 专题攻克顺序</div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 10px;">
+                        <h4 style="color: white; margin-bottom: 10px;">第一阶段 (9-11月)</h4>
+                        <p>📐 数论模块 (18讲)</p>
+                        <p style="font-size: 0.9em; margin-top: 5px;">质数、因数、倍数、余数</p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 15px; border-radius: 10px;">
+                        <h4 style="color: white; margin-bottom: 10px;">第二阶段 (12-2月)</h4>
+                        <p>🚗 行程专题 (15讲)</p>
+                        <p style="font-size: 0.9em; margin-top: 5px;">相遇、追及、多次相遇</p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; padding: 15px; border-radius: 10px;">
+                        <h4 style="color: white; margin-bottom: 10px;">第三阶段 (3-5月)</h4>
+                        <p>📊 方程+几何 (15讲)</p>
+                        <p style="font-size: 0.9em; margin-top: 5px;">综合应用与提升</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 六年级学习路径 -->
+            <div class="teacher-card">
+                <div class="teacher-header">
+                    <div class="teacher-number" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">6年级</div>
+                    <div class="teacher-name">六年级全科学习路径 - 小升初冲刺</div>
+                </div>
+                
+                <div class="section-title">📖 阶段目标</div>
+                <p class="content-text">
+                    <strong>校内:</strong> 全面复习,查漏补缺,确保基础知识扎实<br>
+                    <strong>校外:</strong> 冲刺小升初,掌握七大模块,备战分班考
+                </p>
+                
+                <div class="section-title">📚 推荐学习路径</div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                    <h4 style="color: #667eea; margin-bottom: 15px;">🎓 小升初全面冲刺方案</h4>
+                    <div style="margin-left: 20px; line-height: 2;">
+                        <p><strong>1️⃣ 上学期 (9-1月): 系统学习</strong></p>
+                        <p style="margin-left: 20px; color: #666;">→ <span class="highlight">六年级奥数思维全年S+班</span> (48讲)</p>
+                        <p style="margin-left: 20px; color: #666;">→ <span class="highlight">六年级高思导引刷题班</span> (23讲)</p>
+                        
+                        <p><strong>2️⃣ 寒假 (1-2月): 专题突破</strong></p>
+                        <p style="margin-left: 20px; color: #666;">→ 继续学习专题模块(数论/行程/方程/几何)</p>
+                        <p style="margin-left: 20px; color: #666;">→ 针对薄弱环节重点攻克</p>
+                        
+                        <p><strong>3️⃣ 下学期 (3-5月): 总复习</strong></p>
+                        <p style="margin-left: 20px; color: #666;">→ <span class="highlight">七大模块体系总复习A+班/S+班</span></p>
+                        <p style="margin-left: 20px; color: #666;">→ 系统梳理所有知识点</p>
+                        
+                        <p><strong>4️⃣ 考前冲刺 (5-6月)</strong></p>
+                        <p style="margin-left: 20px; color: #666;">→ <span class="highlight">小升初分班考冲刺班</span> (7讲)</p>
+                        <p style="margin-left: 20px; color: #666;">→ <span class="highlight">北京18所名校真题讲解</span> (18讲)</p>
+                        <p style="margin-left: 20px; color: #666;">→ (如需要) <span class="highlight">八少八素神测冲刺班</span></p>
+                    </div>
+                </div>
+                
+                <div class="section-title">📅 七大模块复习计划</div>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <thead>
+                        <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                            <th style="padding: 12px; text-align: left;">模块</th>
+                            <th style="padding: 12px; text-align: left;">核心内容</th>
+                            <th style="padding: 12px; text-align: left;">复习时长</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background: #fff;">
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">📐 计算模块</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">分数、小数、百分数综合运算</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">2周</td>
+                        </tr>
+                        <tr style="background: #f8f9fa;">
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">🔢 数论模块</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">质因数、最值、余数、整除</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">3周</td>
+                        </tr>
+                        <tr style="background: #fff;">
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">📏 几何模块</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">平面几何、立体图形、变换</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">3周</td>
+                        </tr>
+                        <tr style="background: #f8f9fa;">
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">📝 应用题模块</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">和差倍、鸡兔同笼、盈亏问题</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">2周</td>
+                        </tr>
+                        <tr style="background: #fff;">
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">🏃 行程模块</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">相遇追及、流水行船、环形</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">2周</td>
+                        </tr>
+                        <tr style="background: #f8f9fa;">
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">🔍 计数模块</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">排列组合、容斥原理、抽屉</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #eee;">2周</td>
+                        </tr>
+                        <tr style="background: #fff;">
+                            <td style="padding: 12px;">🎯 杂题模块</td>
+                            <td style="padding: 12px;">逻辑推理、最值、构造论证</td>
+                            <td style="padding: 12px;">1周</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 学习建议总结 -->
+            <div class="teacher-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+                <h2 style="color: white; margin-bottom: 20px; text-align: center;">💡 学习建议总结</h2>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h3 style="color: white; margin-bottom: 15px;">⏰ 时间分配</h3>
+                        <p style="line-height: 1.8;">
+                            • 校内同步: 30分钟/天<br>
+                            • 奥数学习: 1-2小时/次, 3-4次/周<br>
+                            • 专题突破: 周末集中学习<br>
+                            • 练习巩固: 学完即练
+                        </p>
+                    </div>
+                    
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h3 style="color: white; margin-bottom: 15px;">📚 资源组合</h3>
+                        <p style="line-height: 1.8;">
+                            • <strong>主线:</strong> 宇神奥数全集(系统完整)<br>
+                            • <strong>同步:</strong> 国家平台(校内保障)<br>
+                            • <strong>辅助:</strong> B站课程(查漏补缺)<br>
+                            • <strong>强化:</strong> 专题模块(重点突破)
+                        </p>
+                    </div>
+                    
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                        <h3 style="color: white; margin-bottom: 15px;">🎯 学习技巧</h3>
+                        <p style="line-height: 1.8;">
+                            • 先看视频理解概念<br>
+                            • 对照PDF讲义做笔记<br>
+                            • 学完立刻做练习题<br>
+                            • 错题整理定期复习<br>
+                            • 不懂的地方反复看
+                        </p>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; margin-top: 20px;">
+                    <h3 style="color: white; margin-bottom: 15px; text-align: center;">🏆 预期效果</h3>
+                    <p style="font-size: 1.1em; line-height: 2; text-align: center;">
+                        <strong>3-4年级:</strong> 建立奥数思维,校内满分 | 
+                        <strong>5年级:</strong> 专题深化,竞赛获奖 | 
+                        <strong>6年级:</strong> 小升初优异,名校录取
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 同步资源板块 -->
+        <div id="resources" class="content-section">
+            <div class="external-link">
+                <h3>🎓 国家智慧教育平台 - 同步课堂</h3>
+                <p class="content-text" style="margin-bottom: 15px;">
+                    教育部官方权威资源，涵盖小学1-6年级全科目同步教材内容，9万+条免费资源
+                </p>
+                <a href="https://basic.smartedu.cn/syncClassroom" target="_blank" class="link-btn" style="font-size: 1.1em; padding: 15px 30px;">
+                    🔗 进入同步课堂首页
+                </a>
+            </div>
+            
+            <div class="teacher-card">
+                <h2 style="color: #667eea; margin-bottom: 20px;">📚 各年级科目快速导航</h2>
+                <p class="content-text" style="margin-bottom: 20px; color: #666;">
+                    💡 点击年级按钮展开，然后点击科目按钮进入智慧教育平台，在平台左侧导航可快速定位到对应内容
+                </p>
+                
+                <div style="background: #e7f3ff; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 5px solid #667eea;">
+                    <p style="color: #004085; line-height: 1.8;">
+                        <strong>📌 使用说明：</strong>展开您需要的年级 → 点击科目按钮（如"📚 三年级 数学"）→ 进入平台后在左侧选择对应年级和科目
+                    </p>
+                </div>
+                
+                <!-- 一年级 -->
+                <div style="margin-bottom: 15px;">
+                    <button class="toggle-btn" onclick="toggleCollection('grade1')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <span id="icongrade1">▶</span> 一年级（6-7岁）
+                    </button>
+                    <div id="grade1" class="collection-content">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; padding: 15px;">
+                            <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #667eea;">
+                                <h4 style="color: #667eea; margin-bottom: 10px;">📖 语文</h4>
+                                <p style="color: #666; line-height: 1.8;">• 拼音学习与识字<br>• 简单阅读理解<br>• 看图写话入门<br>• 古诗词启蒙</p>
+                                <a href="https://basic.smartedu.cn/syncClassroom?defaultTag=e7bbb2de-0590-11ed-9c79-92fc3b3249d5%2Fe7bbd296-0590-11ed-9c79-92fc3b3249d5%2F6a749654-0772-11ed-ac74-092ab92074e6%2F44bee8bc-54e6-11ed-9c34-850ba61fa9f4%2Fff8080814371757b014390f883db0453%2F5136342961" target="_blank" class="link-btn" style="margin-top: 10px; display: inline-block;">📚 一年级 语文</a>
+                            </div>
+                            <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #28a745;">
+                                <h4 style="color: #28a745; margin-bottom: 10px;">🔢 数学</h4>
+                                <p style="color: #666; line-height: 1.8;">• 20以内加减法<br>• 认识图形<br>• 简单的时间和位置<br>• 数学思维启蒙</p>
+                                <a href="https://basic.smartedu.cn/syncClassroom?defaultTag=e7bbb2de-0590-11ed-9c79-92fc3b3249d5%2Fe7bbd296-0590-11ed-9c79-92fc3b3249d5%2Fe7bbcf80-0590-11ed-9c79-92fc3b3249d5%2Fff8080814371757b01437c363a187b0a%2Fff8080814371757b014390f883db0453%2F5136342961" target="_blank" class="link-btn" style="margin-top: 10px; display: inline-block; background: #28a745;">📚 一年级 数学</a>
+                            </div>
+                            <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #ffc107;">
+                                <h4 style="color: #ff9800; margin-bottom: 10px;">🎨 其他科目</h4>
+                                <p style="color: #666; line-height: 1.8;">• 道德与法治<br>• 科学启蒙<br>• 音乐美术<br>• 体育健康</p>
+                                <a href="https://basic.smartedu.cn/syncClassroom" target="_blank" class="link-btn" style="margin-top: 10px; display: inline-block; background: #ff9800;">查看更多</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 二年级 -->
+                <div style="margin-bottom: 15px;">
+                    <button class="toggle-btn" onclick="toggleCollection('grade2')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <span id="icongrade2">▶</span> 二年级（7-8岁）
+                    </button>
+                    <div id="grade2" class="collection-content">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; padding: 15px;">
+                            <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #667eea;">
+                                <h4 style="color: #667eea; margin-bottom: 10px;">📖 语文</h4>
+                                <p style="color: #666; line-height: 1.8;">• 识字量扩展（800-1000字）<br>• 短文阅读与理解<br>• 写话练习<br>• 古诗文背诵</p>
+                                <a href="https://basic.smartedu.cn/syncClassroom?defaultTag=e7bbb2de-0590-11ed-9c79-92fc3b3249d5%2Fe7bbd304-0590-11ed-9c79-92fc3b3249d5%2F6a749654-0772-11ed-ac74-092ab92074e6%2F44bee8bc-54e6-11ed-9c34-850ba61fa9f4%2Fff8080814371757b014390f883db0453%2F5136342961" target="_blank" class="link-btn" style="margin-top: 10px; display: inline-block;">📚 二年级 语文</a>
+                            </div>
+                            <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #28a745;">
+                                <h4 style="color: #28a745; margin-bottom: 10px;">🔢 数学</h4>
+                                <p style="color: #666; line-height: 1.8;">• 100以内加减法<br>• 乘法口诀表<br>• 长度单位认识<br>• 简单应用题</p>
+                                <a href="https://basic.smartedu.cn/syncClassroom?defaultTag=e7bbb2de-0590-11ed-9c79-92fc3b3249d5%2Fe7bbd304-0590-11ed-9c79-92fc3b3249d5%2Fe7bbcf80-0590-11ed-9c79-92fc3b3249d5%2Fff8080814371757b01437c363a187b0a%2Fff8080814371757b014390f883db0453%2F5136342961" target="_blank" class="link-btn" style="margin-top: 10px; display: inline-block; background: #28a745;">📚 二年级 数学</a>
+                            </div>
+                            <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #ffc107;">
+                                <h4 style="color: #ff9800; margin-bottom: 10px;">🎨 其他科目</h4>
+                                <p style="color: #666; line-height: 1.8;">• 道德与法治<br>• 科学探究<br>• 音乐美术<br>• 体育健康</p>
+                                <a href="https://basic.smartedu.cn/syncClassroom" target="_blank" class="link-btn" style="margin-top: 10px; display: inline-block; background: #ff9800;">查看更多</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 三年级 -->
+                <div style="margin-bottom: 15px;">
+                    <button class="toggle-btn" onclick="toggleCollection('grade3')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <span id="icongrade3">▶</span> 三年级（8-9岁）
+                    </button>
+                    <div id="grade3" class="collection-content">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; padding: 15px;">
+                            <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #667eea;">
+                                <h4 style="color: #667eea; margin-bottom: 10px;">📖 语文</h4>
+                                <p style="color: #666; line-height: 1.8;">• 阅读理解深化<br>• 作文入门（300字）<br>• 修辞手法学习<br>• 文言文启蒙</p>
+                                <a href="https://basic.smartedu.cn/syncClassroom?defaultTag=e7bbb2de-0590-11ed-9c79-92fc3b3249d5%2Fe7bbd372-0590-11ed-9c79-92fc3b3249d5%2F6a749654-0772-11ed-ac74-092ab92074e6%2F44bee8bc-54e6-11ed-9c34-850ba61fa9f4%2Fff8080814371757b014390f883db0453%2F5136342961" target="_blank" class="link-btn" style="margin-top: 10px; display: inline-block;">📚 三年级 语文</a>
+                            </div>
+                            <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #28a745;">
+                                <h4 style="color: #28a745; margin-bottom: 10px;">🔢 数学</h4>
+                                <p style="color: #666; line-height: 1.8;">• 万以内加减法<br>• 乘除法应用<br>• 分数初步认识<br>• 周长面积计算</p>
+                                <a href="https://basic.smartedu.cn/syncClassroom?defaultTag=e7bbb2de-0590-11ed-9c79-92fc3b3249d5%2Fe7bbd372-0590-11ed-9c79-92fc3b3249d5%2Fe7bbcf80-0590-11ed-9c79-92fc3b3249d5%2Fff8080814371757b01437c363a187b0a%2Fff8080814371757b014390f883db0453%2F5136342961" target="_blank" class="link-btn" style="margin-top: 10px; display: inline-block; background: #28a745;">📚 三年级 数学</a>
+                            </div>
+                            <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #dc3545;">
+                                <h4 style="color: #dc3545; margin-bottom: 10px;">🌍 英语（新增）</h4>
+                                <p style="color: #666; line-height: 1.8;">• 字母与音标<br>• 简单单词句型<br>• 日常对话<br>• 英语儿歌</p>
+                                <a href="https://basic.smartedu.cn/syncClassroom?defaultTag=e7bbb2de-0590-11ed-9c79-92fc3b3249d5%2Fe7bbd372-0590-11ed-9c79-92fc3b3249d5%2F6a7495dc-0772-11ed-ac74-092ab92074e6%2F44becd82-54e6-11ed-9c34-850ba61fa9f4%2Fff8080814371757b014390f883db0453%2F5136342961" target="_blank" class="link-btn" style="margin-top: 10px; display: inline-block; background: #dc3545;">📚 三年级 英语</a>
+                            </div>
+                            <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #ffc107;">
+                                <h4 style="color: #ff9800; margin-bottom: 10px;">🔬 其他科目</h4>
+                                <p style="color: #666; line-height: 1.8;">• 道德与法治<br>• 科学实验<br>• 信息技术<br>• 音乐美术体育</p>
+                                <a href="https://basic.smartedu.cn/syncClassroom" target="_blank" class="link-btn" style="margin-top: 10px; display: inline-block; background: #ff9800;">查看更多</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 四年级 -->
+                <div style="margin-bottom: 15px;">
+                    <button class="toggle-btn" onclick="toggleCollection('grade4')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <span id="icongrade4">▶</span> 四年级（9-10岁）
+                    </button>
+                    <div id="grade4" class="collection-content">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; padding: 15px;">
+                            <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #667eea;">
+                                <h4 style="color: #667eea; margin-bottom: 10px;">📖 语文</h4>
+                                <p style="color: #666; line-height: 1.8;">• 长篇阅读理解<br>• 作文提升（400字）<br>• 古诗文赏析<br>• 综合性学习</p>
+                                <a href="https://basic.smartedu.cn/syncClassroom?defaultTag=e7bbb2de-0590-11ed-9c79-92fc3b3249d5%2Fe7bbd3ea-0590-11ed-9c79-92fc3b3249d5%2F6a749654-0772-11ed-ac74-092ab92074e6%2F44bee8bc-54e6-11ed-9c34-850ba61fa9f4%2Fff8080814371757b014390f883db0453" target="_blank" class="link-btn" style="margin-top: 10px; display: inline-block;">📚 四年级 语文</a>
+                            </div>
+                            <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #28a745;">
+                                <h4 style="color: #28a745; margin-bottom: 10px;">🔢 数学</h4>
+                                <p style="color: #666; line-height: 1.8;">• 大数认识与运算<br>• 小数加减法<br>• 平行与垂直<br>• 行程问题入门</p>
+                                <a href="https://basic.smartedu.cn/syncClassroom?defaultTag=e7bbb2de-0590-11ed-9c79-92fc3b3249d5%2Fe7bbd3ea-0590-11ed-9c79-92fc3b3249d5%2Fe7bbcf80-0590-11ed-9c79-92fc3b3249d5%2Fff8080814371757b01437c363a187b0a%2Fff8080814371757b014390f883db0453" target="_blank" class="link-btn" style="margin-top: 10px; display: inline-block; background: #28a745;">📚 四年级 数学</a>
+                            </div>
+                            <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #dc3545;">
+                                <h4 style="color: #dc3545; margin-bottom: 10px;">🌍 英语</h4>
+                                <p style="color: #666; line-height: 1.8;">• 词汇量扩展<br>• 时态学习<br>• 短文阅读<br>• 写作入门</p>
+                                <a href="https://basic.smartedu.cn/syncClassroom?defaultTag=e7bbb2de-0590-11ed-9c79-92fc3b3249d5%2Fe7bbd3ea-0590-11ed-9c79-92fc3b3249d5%2F6a7495dc-0772-11ed-ac74-092ab92074e6%2F44becd82-54e6-11ed-9c34-850ba61fa9f4%2Fff8080814371757b014390f883db0453%2F5136342961" target="_blank" class="link-btn" style="margin-top: 10px; display: inline-block; background: #dc3545;">📚 四年级 英语</a>
+                            </div>
+                            <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #ffc107;">
+                                <h4 style="color: #ff9800; margin-bottom: 10px;">🔬 其他科目</h4>
+                                <p style="color: #666; line-height: 1.8;">• 道德与法治<br>• 科学探究<br>• 信息技术<br>• 音乐美术体育</p>
+                                <a href="https://basic.smartedu.cn/syncClassroom" target="_blank" class="link-btn" style="margin-top: 10px; display: inline-block; background: #ff9800;">查看更多</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 五年级 -->
+                <div style="margin-bottom: 15px;">
+                    <button class="toggle-btn" onclick="toggleCollection('grade5')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <span id="icongrade5">▶</span> 五年级（10-11岁）
+                    </button>
+                    <div id="grade5" class="collection-content">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; padding: 15px;">
+                            <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #667eea;">
+                                <h4 style="color: #667eea; margin-bottom: 10px;">📖 语文</h4>
+                                <p style="color: #666; line-height: 1.8;">• 说明文与议论文<br>• 作文深化（500字）<br>• 文言文阅读<br>• 名著导读</p>
+                                <a href="https://basic.smartedu.cn/syncClassroom?defaultTag=e7bbb2de-0590-11ed-9c79-92fc3b3249d5%2Fe7bbebc8-0590-11ed-9c79-92fc3b3249d5%2F6a749654-0772-11ed-ac74-092ab92074e6%2F44bee8bc-54e6-11ed-9c34-850ba61fa9f4%2Fff8080814371757b014390f883db0453" target="_blank" class="link-btn" style="margin-top: 10px; display: inline-block;">📚 五年级 语文</a>
+                            </div>
+                            <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #28a745;">
+                                <h4 style="color: #28a745; margin-bottom: 10px;">🔢 数学</h4>
+                                <p style="color: #666; line-height: 1.8;">• 小数乘除法<br>• 分数加减法<br>• 多边形面积<br>• 可能性问题</p>
+                                <a href="https://basic.smartedu.cn/syncClassroom?defaultTag=e7bbb2de-0590-11ed-9c79-92fc3b3249d5%2Fe7bbebc8-0590-11ed-9c79-92fc3b3249d5%2Fe7bbcf80-0590-11ed-9c79-92fc3b3249d5%2Fff8080814371757b01437c363a187b0a%2Fff8080814371757b014390f883db0453" target="_blank" class="link-btn" style="margin-top: 10px; display: inline-block; background: #28a745;">📚 五年级 数学</a>
+                            </div>
+                            <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #dc3545;">
+                                <h4 style="color: #dc3545; margin-bottom: 10px;">🌍 英语</h4>
+                                <p style="color: #666; line-height: 1.8;">• 语法系统学习<br>• 阅读理解<br>• 写作技巧<br>• 听力训练</p>
+                                <a href="https://basic.smartedu.cn/syncClassroom?defaultTag=e7bbb2de-0590-11ed-9c79-92fc3b3249d5%2Fe7bbebc8-0590-11ed-9c79-92fc3b3249d5%2F6a7495dc-0772-11ed-ac74-092ab92074e6%2F44becd82-54e6-11ed-9c34-850ba61fa9f4%2Fff8080814371757b014390f883db0453%2F5136342960" target="_blank" class="link-btn" style="margin-top: 10px; display: inline-block; background: #dc3545;">📚 五年级 英语</a>
+                            </div>
+                            <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #ffc107;">
+                                <h4 style="color: #ff9800; margin-bottom: 10px;">🔬 其他科目</h4>
+                                <p style="color: #666; line-height: 1.8;">• 道德与法治<br>• 科学实验<br>• 信息技术<br>• 音乐美术体育</p>
+                                <a href="https://basic.smartedu.cn/syncClassroom" target="_blank" class="link-btn" style="margin-top: 10px; display: inline-block; background: #ff9800;">查看更多</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 六年级 -->
+                <div style="margin-bottom: 15px;">
+                    <button class="toggle-btn" onclick="toggleCollection('grade6')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <span id="icongrade6">▶</span> 六年级（11-12岁）- 小升初冲刺
+                    </button>
+                    <div id="grade6" class="collection-content">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; padding: 15px;">
+                            <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #667eea;">
+                                <h4 style="color: #667eea; margin-bottom: 10px;">📖 语文</h4>
+                                <p style="color: #666; line-height: 1.8;">• 综合阅读能力<br>• 作文高阶（600字+）<br>• 文言文深化<br>• 小升初冲刺</p>
+                                <a href="https://basic.smartedu.cn/syncClassroom?defaultTag=e7bbb2de-0590-11ed-9c79-92fc3b3249d5%2Fe7bbecae-0590-11ed-9c79-92fc3b3249d5%2F6a749654-0772-11ed-ac74-092ab92074e6%2F44bee8bc-54e6-11ed-9c34-850ba61fa9f4%2Fff8080814371757b014390f883db0453" target="_blank" class="link-btn" style="margin-top: 10px; display: inline-block;">📚 六年级 语文</a>
+                            </div>
+                            <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #28a745;">
+                                <h4 style="color: #28a745; margin-bottom: 10px;">🔢 数学</h4>
+                                <p style="color: #666; line-height: 1.8;">• 分数乘除法<br>• 百分比应用<br>• 圆的认识<br>• 比例问题</p>
+                                <a href="https://basic.smartedu.cn/syncClassroom?defaultTag=e7bbb2de-0590-11ed-9c79-92fc3b3249d5%2Fe7bbecae-0590-11ed-9c79-92fc3b3249d5%2Fe7bbcf80-0590-11ed-9c79-92fc3b3249d5%2Fff8080814371757b01437c363a187b0a%2Fff8080814371757b014390f883db0453" target="_blank" class="link-btn" style="margin-top: 10px; display: inline-block; background: #28a745;">📚 六年级 数学</a>
+                            </div>
+                            <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #dc3545;">
+                                <h4 style="color: #dc3545; margin-bottom: 10px;">🌍 英语</h4>
+                                <p style="color: #666; line-height: 1.8;">• 语法综合应用<br>• 完形填空<br>• 综合写作<br>• 小升初真题</p>
+                                <a href="https://basic.smartedu.cn/syncClassroom?defaultTag=e7bbb2de-0590-11ed-9c79-92fc3b3249d5%2Fe7bbecae-0590-11ed-9c79-92fc3b3249d5%2F6a7495dc-0772-11ed-ac74-092ab92074e6%2F44becd82-54e6-11ed-9c34-850ba61fa9f4%2Fff8080814371757b014390f883db0453" target="_blank" class="link-btn" style="margin-top: 10px; display: inline-block; background: #dc3545;">📚 六年级 英语</a>
+                            </div>
+                            <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #ffc107;">
+                                <h4 style="color: #ff9800; margin-bottom: 10px;">🔬 其他科目</h4>
+                                <p style="color: #666; line-height: 1.8;">• 道德与法治<br>• 科学综合<br>• 信息技术<br>• 音乐美术体育</p>
+                                <a href="https://basic.smartedu.cn/syncClassroom" target="_blank" class="link-btn" style="margin-top: 10px; display: inline-block; background: #ff9800;">查看更多</a>
+                            </div>
+                        </div>
+                        <div style="background: #d4edda; padding: 15px; border-radius: 10px; margin-top: 15px; border-left: 5px solid #28a745;">
+                            <h4 style="color: #155724; margin-bottom: 10px;">🎯 小升初冲刺建议</h4>
+                            <p style="color: #155724; line-height: 1.8;">
+                                • 系统复习1-6年级重点知识<br>
+                                • 多做历年小升初真题<br>
+                                • 加强薄弱科目针对性训练<br>
+                                • 配合奥数课程冲刺重点中学
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="teacher-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <h2 style="color: white; margin-bottom: 15px;">💡 使用技巧</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px;">
+                        <h4 style="margin-bottom: 10px;">📱 多终端访问</h4>
+                        <p style="line-height: 1.8;">支持电脑、平板、手机访问，也可下载"智慧中小学"APP</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px;">
+                        <h4 style="margin-bottom: 10px;">📚 电子教材</h4>
+                        <p style="line-height: 1.8;">平台提供各版本电子教材，可在线查看或下载打印</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px;">
+                        <h4 style="margin-bottom: 10px;">🎥 同步课程</h4>
+                        <p style="line-height: 1.8;">与学校课程完全同步，课前预习、课后复习都适用</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px;">
+                        <h4 style="margin-bottom: 10px;">✅ 完全免费</h4>
+                        <p style="line-height: 1.8;">国家级平台，所有资源完全免费，无需付费购买</p>
+                    </div>
+                </div>
+            </div>
+                </div>
+        
+        <!-- 百度网盘资源板块 -->
+        <div id="baidu" class="content-section active">
+            <div class="external-link">
+                <h3>💾 宇神小学奥数 - 完整课程资源库</h3>
+                <p class="content-text" style="margin-bottom: 15px;">
+                    包含高思导引刷题班、奥数思维全年班、专题模块、小升初冲刺等16个系列，共320+节课程
+                </p>
+                <div style="background: #fff3cd; padding: 15px; border-radius: 10px; margin: 15px 0;">
+                    <p style="color: #856404; margin: 0; line-height: 1.8;">
+                        <strong>📋 提取码：</strong><span style="font-size: 1.3em; font-weight: bold; color: #dc3545; margin-left: 10px;">8qmn</span>
+                    </p>
+            </div>
+                <a href="https://pan.baidu.com/s/1M8idU2OJf4kFh324cvCE8g?pwd=8qmn" target="_blank" class="link-btn" style="font-size: 1.1em; padding: 15px 30px;">
+                    🔗 访问百度网盘链接
+                </a>
+            </div>
+            
+            <!-- 资源统计卡片 -->
+            <div class="teacher-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <h2 style="color: white; margin-bottom: 20px;">📊 资源总览</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 2.5em; margin-bottom: 10px;">16</div>
+                        <div style="font-size: 1.1em;">课程系列</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 2.5em; margin-bottom: 10px;">320+</div>
+                        <div style="font-size: 1.1em;">节课程</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 2.5em; margin-bottom: 10px;">4</div>
+                        <div style="font-size: 1.1em;">年级覆盖</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 2.5em; margin-bottom: 10px;">100%</div>
+                        <div style="font-size: 1.1em;">配套讲义</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 详细课程目录 -->
+            <div class="teacher-card">
+                <h2 style="color: #667eea; margin-bottom: 20px;">📚 详细课程目录</h2>
+                
+                <!-- 一、高思导引刷题班系列 -->
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <h3 style="color: #28a745; margin-bottom: 15px;">一、高思导引刷题班系列 (共94课)</h3>
+                    
+                    <!-- 三年级 -->
+                    <div class="teacher-card" style="margin-bottom: 15px;">
+                        <div class="teacher-header">
+                            <div class="teacher-number" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">3年级</div>
+                            <div class="teacher-name">【完结】宇神老师《高思导引》刷题班-三年级</div>
+                        </div>
+                        <div class="section-title">课程信息</div>
+                        <p class="content-text">
+                            📹 <strong>23节课程</strong> | 📝 每节配套PDF讲义 | 📦 总大小约3.5GB
+                        </p>
+                        <div class="links" style="margin: 15px 0;">
+                            <a href="https://pan.baidu.com/s/1M8idU2OJf4kFh324cvCE8g?pwd=8qmn#list/path=%2Fsharelink3813879060-261895595427083%2F%E5%AE%87%E7%A5%9E%E5%B0%8F%E5%AD%A6%E5%A5%A5%E6%95%B0%2F01.%E3%80%90%E5%AE%8C%E7%BB%93%E3%80%91%E5%AE%87%E7%A5%9E%E8%80%81%E5%B8%88%E3%80%8A%E9%AB%98%E6%80%9D%E5%AF%BC%E5%BC%95%E3%80%8B%E5%88%B7%E9%A2%98%E7%8F%AD-%E4%B8%89%E5%B9%B4%E7%BA%A7%E3%80%9023%E8%AF%BE%20%E8%A7%86%E9%A2%91%2BPDF%E3%80%91&parentPath=%2Fsharelink3813879060-261895595427083" target="_blank" class="link-btn">
+                                🔗 直达三年级课程文件夹
+                            </a>
+                        </div>
+                        <button class="toggle-btn" onclick="toggleCollection('grade3gaosi')">
+                            <span id="icongrade3gaosi">▶</span> 查看完整课程列表 (23讲)
+                        </button>
+                        <div id="grade3gaosi" class="collection-content">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; padding: 10px;">
+                                <div class="collection-item">📝 第01讲 四则运算一 (103.2M+2.4M)</div>
+                                <div class="collection-item">📝 第02讲 基本应用题 (128.6M+2.8M)</div>
+                                <div class="collection-item">📝 第03讲 枚举法一 (108.4M+2.3M)</div>
+                                <div class="collection-item">📝 第04讲 找规律 (78.3M+2.4M)</div>
+                                <div class="collection-item">📝 第05讲 和差倍问题一 (128.9M+2.6M)</div>
+                                <div class="collection-item">📝 第06讲 简单加减法竖式 (171.6M+2.4M)</div>
+                                <div class="collection-item">📝 第07讲 周期问题 (171.7M+2.8M)</div>
+                                <div class="collection-item">📝 第08讲 鸡兔同笼问题一 (190.9M+2.5M)</div>
+                                <div class="collection-item">📝 第09讲 等差数列 (166.2M+2.8M)</div>
+                                <div class="collection-item">📝 第10讲 几何图形的认知 (125.1M+2.8M)</div>
+                                <div class="collection-item">📝 第11讲 盈亏问题一 (125M+2.7M)</div>
+                                <div class="collection-item">📝 第12讲 智巧趣题一 (253.1M+4M)</div>
+                                <div class="collection-item">📝 第13讲 四则运算二 (83.6M+2.1M)</div>
+                                <div class="collection-item">📝 第14讲 枚举法二 (184.7M+2.5M)</div>
+                                <div class="collection-item">📝 第15讲 和差倍问题二 (153.4M+2.8M)</div>
+                                <div class="collection-item">📝 第16讲 简单乘除法竖式 (192.1M+2.1M)</div>
+                                <div class="collection-item">📝 第17讲 鸡兔同笼问题二 (138.5M+2.8M)</div>
+                                <div class="collection-item">📝 第18讲 四则运算三 (135.2M+2.3M)</div>
+                                <div class="collection-item">📝 第19讲 间隔与阵列 (237.2M+3M)</div>
+                                <div class="collection-item">📝 第20讲 算符与数字 (145.3M+2.5M)</div>
+                                <div class="collection-item">📝 第21讲 盈亏问题二 (158.2M+2.5M)</div>
+                                <div class="collection-item">📝 第22讲 长度与角度的计算 (111.5M+2.5M)</div>
+                                <div class="collection-item">📝 第23讲 智巧趣题二 (133M+2.9M)</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 四年级 -->
+                    <div class="teacher-card" style="margin-bottom: 15px;">
+                        <div class="teacher-header">
+                            <div class="teacher-number" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">4年级</div>
+                            <div class="teacher-name">【完结】宇神老师《高思导引》刷题班-四年级</div>
+                        </div>
+                        <div class="section-title">课程信息</div>
+                        <p class="content-text">
+                            📹 <strong>24节课程</strong> | 📝 每节配套PDF讲义 | 📦 共48个文件
+                        </p>
+                        <div class="links" style="margin: 15px 0;">
+                            <a href="https://pan.baidu.com/s/1M8idU2OJf4kFh324cvCE8g?pwd=8qmn#list/path=%2Fsharelink3813879060-261895595427083%2F%E5%AE%87%E7%A5%9E%E5%B0%8F%E5%AD%A6%E5%A5%A5%E6%95%B0%2F02.%E3%80%90%E5%AE%8C%E7%BB%93%E3%80%91%E5%AE%87%E7%A5%9E%E8%80%81%E5%B8%88%E3%80%8A%E9%AB%98%E6%80%9D%E5%AF%BC%E5%BC%95%E3%80%8B%E5%88%B7%E9%A2%98%E7%8F%AD-%E5%9B%9B%E5%B9%B4%E7%BA%A7%E3%80%9024%E8%AF%BE%20%E8%A7%86%E9%A2%91%2BPDF%E3%80%91&parentPath=%2Fsharelink3813879060-261895595427083" target="_blank" class="link-btn">
+                                🔗 直达四年级课程文件夹
+                            </a>
+                        </div>
+                        <button class="toggle-btn" onclick="toggleCollection('grade4gaosi')">
+                            <span id="icongrade4gaosi">▶</span> 查看完整课程列表 (24讲)
+                        </button>
+                        <div id="grade4gaosi" class="collection-content">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; padding: 10px;">
+                                <div class="collection-item">📝 第01讲 整数计算综合 (275.7M+2.4M)</div>
+                                <div class="collection-item">📝 第02讲 数阵图初步 (289.7M+2.3M)</div>
+                                <div class="collection-item">📝 第03讲 竖式问题 (300.3M+2.4M)</div>
+                                <div class="collection-item">📝 第04讲 几何图形剪拼 (232.6M+2.1M)</div>
+                                <div class="collection-item">📝 第05讲 行程问题一 (288.5M+2.2M)</div>
+                                <div class="collection-item">📝 第06讲 抽屉原理一 (190.1M+2.2M)</div>
+                                <div class="collection-item">📝 第07讲 直线型计算一 (148.3M+2.4M)</div>
+                                <div class="collection-item">📝 第08讲 和差倍问题三 (227.3M+2.3M)</div>
+                                <div class="collection-item">📝 第09讲 还原问题与年龄问题 (294.2M+2.2M)</div>
+                                <div class="collection-item">📝 第10讲 数列与数表 (348.4M+2.6M)</div>
+                                <div class="collection-item">📝 第11讲 加乘原理 (241.8M+2.1M)</div>
+                                <div class="collection-item">📝 第12讲 统筹与对策 (234.4M+2.6M)</div>
+                                <div class="collection-item">📝 第13讲 多位数与小数 (169.9M+1.7M)</div>
+                                <div class="collection-item">📝 第14讲 平均数问题 (160.9M+2.4M)</div>
+                                <div class="collection-item">📝 第15讲 复杂竖式 (449.5M+2.1M)</div>
+                                <div class="collection-item">📝 第16讲 横式问题 (166.7M+1.9M)</div>
+                                <div class="collection-item">📝 第17讲 格点与割补 (151.5M+2.7M)</div>
+                                <div class="collection-item">📝 第18讲 行程问题二 (326.2M+2.6M)</div>
+                                <div class="collection-item">📝 第19讲 行程问题三 (199.2M+2.6M)</div>
+                                <div class="collection-item">📝 第20讲 幻方与数阵图拓展 (209M+2.9M)</div>
+                                <div class="collection-item">📝 第21讲 排列组合 (140.1M+2.1M)</div>
+                                <div class="collection-item">📝 第22讲 计数综合一 (122.9M+2.3M)</div>
+                                <div class="collection-item">📝 第23讲 最值问题一 (196.1M+2.1M)</div>
+                                <div class="collection-item">📝 第24讲 逻辑推理一 (182.8M+2.9M)</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 五年级 -->
+                    <div class="teacher-card" style="margin-bottom: 15px;">
+                        <div class="teacher-header">
+                            <div class="teacher-number" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">5年级</div>
+                            <div class="teacher-name">【完结】宇神老师《高思导引》刷题班-五年级</div>
+                        </div>
+                        <div class="section-title">课程信息</div>
+                        <p class="content-text">
+                            📹 <strong>24节课程</strong> | 📝 每节配套PDF讲义 | 📦 共48个文件
+                        </p>
+                        <div class="links" style="margin: 15px 0;">
+                            <a href="https://pan.baidu.com/s/1M8idU2OJf4kFh324cvCE8g?pwd=8qmn#list/path=%2Fsharelink3813879060-261895595427083%2F%E5%AE%87%E7%A5%9E%E5%B0%8F%E5%AD%A6%E5%A5%A5%E6%95%B0%2F03.%E3%80%90%E5%AE%8C%E7%BB%93%E3%80%91%E5%AE%87%E7%A5%9E%E8%80%81%E5%B8%88%E3%80%8A%E9%AB%98%E6%80%9D%E5%AF%BC%E5%BC%95%E3%80%8B%E5%88%B7%E9%A2%98%E7%8F%AD-%E4%BA%94%E5%B9%B4%E7%BA%A7%E3%80%9024%E8%AF%BE%20%E8%A7%86%E9%A2%91%2BPDF%E3%80%91&parentPath=%2Fsharelink3813879060-261895595427083" target="_blank" class="link-btn">
+                                🔗 直达五年级课程文件夹
+                            </a>
+                        </div>
+                        <button class="toggle-btn" onclick="toggleCollection('grade5gaosi')">
+                            <span id="icongrade5gaosi">▶</span> 查看完整课程列表 (24讲)
+                        </button>
+                        <div id="grade5gaosi" class="collection-content">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; padding: 10px;">
+                                <div class="collection-item">📝 第01讲 分数计算与比大小 (209.9M+1.7M)</div>
+                                <div class="collection-item">📝 第02讲 整除 (207M+2.8M)</div>
+                                <div class="collection-item">📝 第03讲 质数与合数 (206.6M+2.5M)</div>
+                                <div class="collection-item">📝 第04讲 包含与排除 (281.9M+3.1M)</div>
+                                <div class="collection-item">📝 第05讲 行程问题四 (384.3M+3.4M)</div>
+                                <div class="collection-item">📝 第06讲 几何计数 (279.8M+2.4M)</div>
+                                <div class="collection-item">📝 第07讲 约数与倍数 (235.3M+2.3M)</div>
+                                <div class="collection-item">📝 第08讲 分数与循环小数 (174.4M+2.2M)</div>
+                                <div class="collection-item">📝 第09讲 比较与估算 (238.5M+2.2M)</div>
+                                <div class="collection-item">📝 第10讲 数字谜综合一 (245.1M+2.2M)</div>
+                                <div class="collection-item">📝 第11讲 和差倍分问题 (171.7M+2.9M)</div>
+                                <div class="collection-item">📝 第12讲 应用题拓展 (255.2M+3M)</div>
+                                <div class="collection-item">📝 第13讲 计算综合一 (250.4M+2.4M)</div>
+                                <div class="collection-item">📝 第14讲 直线形计算二 (145M+2.7M)</div>
+                                <div class="collection-item">📝 第15讲 圆与扇形 (145.5M+2.9M)</div>
+                                <div class="collection-item">📝 第16讲 余数 (145.5M+1.9M)</div>
+                                <div class="collection-item">📝 第17讲 工程问题 (234.3M+3.3M)</div>
+                                <div class="collection-item">📝 第18讲 牛吃草问题与钟表问题 (296.6M+3M)</div>
+                                <div class="collection-item">📝 第19讲 直线形计算三 (165.2M+2.4M)</div>
+                                <div class="collection-item">📝 第20讲 行程问题五 (337.1M+3.4M)</div>
+                                <div class="collection-item">📝 第21讲 数字问题 (228.2M+2M)</div>
+                                <div class="collection-item">📝 第22讲 计数综合二 (226.2M+2.2M)</div>
+                                <div class="collection-item">📝 第23讲 构造论证一 (177.3M+3.3M)</div>
+                                <div class="collection-item">📝 第24讲 抽屉原理二 (199M+2.2M)</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 六年级 -->
+                    <div class="teacher-card" style="margin-bottom: 15px;">
+                        <div class="teacher-header">
+                            <div class="teacher-number" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">6年级</div>
+                            <div class="teacher-name">【完结】宇神老师《高思导引》刷题班-六年级</div>
+                        </div>
+                        <div class="section-title">课程信息</div>
+                        <p class="content-text">
+                            📹 <strong>23节课程</strong> | 📝 每节配套PDF讲义 | 📦 共46个文件
+                        </p>
+                        <div class="links" style="margin: 15px 0;">
+                            <a href="https://pan.baidu.com/s/1M8idU2OJf4kFh324cvCE8g?pwd=8qmn#list/path=%2Fsharelink3813879060-261895595427083%2F%E5%AE%87%E7%A5%9E%E5%B0%8F%E5%AD%A6%E5%A5%A5%E6%95%B0%2F04.%E3%80%90%E5%AE%8C%E7%BB%93%E3%80%91%E5%AE%87%E7%A5%9E%E8%80%81%E5%B8%88%E3%80%8A%E9%AB%98%E6%80%9D%E5%AF%BC%E5%BC%95%E3%80%8B%E5%88%B7%E9%A2%98%E7%8F%AD-%E5%85%AD%E5%B9%B4%E7%BA%A7%E3%80%9023%E8%AF%BE%20%E8%A7%86%E9%A2%91%2BPDF%E3%80%91&parentPath=%2Fsharelink3813879060-261895595427083" target="_blank" class="link-btn">
+                                🔗 直达六年级课程文件夹
+                            </a>
+                        </div>
+                        <button class="toggle-btn" onclick="toggleCollection('grade6gaosi')">
+                            <span id="icongrade6gaosi">▶</span> 查看完整课程列表 (23讲)
+                        </button>
+                        <div id="grade6gaosi" class="collection-content">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; padding: 10px;">
+                                <div class="collection-item">📝 第01讲 分数数列计算 (303.1M+1.7M)</div>
+                                <div class="collection-item">📝 第02讲 计算综合二 (480.9M+2.1M)</div>
+                                <div class="collection-item">📝 第03讲 比例解应用题 (483.9M+3.5M)</div>
+                                <div class="collection-item">📝 第04讲 方程解应用题 (447.5M+3M)</div>
+                                <div class="collection-item">📝 第05讲 浓度问题与经济问题 (335.3M+3M)</div>
+                                <div class="collection-item">📝 第06讲 逻辑推理二 (570.4M+3.3M)</div>
+                                <div class="collection-item">📝 第07讲 最值问题二 (408.2M+2.5M)</div>
+                                <div class="collection-item">📝 第08讲 不定方程 (514.1M+2.6M)</div>
+                                <div class="collection-item">📝 第09讲 立体几何 (497.1M+3.1M)</div>
+                                <div class="collection-item">📝 第10讲 几何综合一 (470.1M+2.5M)</div>
+                                <div class="collection-item">📝 第11讲 几何综合二 (382M+2.5M)</div>
+                                <div class="collection-item">📝 第12讲 计数综合三 (610.6M+2.5M)</div>
+                                <div class="collection-item">📝 第13讲 计数综合四 (721.3M+2.9M)</div>
+                                <div class="collection-item">📝 第14讲 行程问题六 (818.1M+3.3M)</div>
+                                <div class="collection-item">📝 第15讲 数论综合一 (588.6M+2.2M)</div>
+                                <div class="collection-item">📝 第16讲 数字谜综合二 (564.2M+2.8M)</div>
+                                <div class="collection-item">📝 第17讲 应用题综合一 (643.7M+3.7M)</div>
+                                <div class="collection-item">📝 第18讲 应用题综合二 (696.4M+3.6M)</div>
+                                <div class="collection-item">📝 第19讲 进位制与取整符号 (385.9M+2.2M)</div>
+                                <div class="collection-item">📝 第20讲 数论综合二 (450.8M+2.6M)</div>
+                                <div class="collection-item">📝 第21讲 数论综合三 (501.1M+2.3M)</div>
+                                <div class="collection-item">📝 第22讲 构造论证二 (278.7M+2.5M)</div>
+                                <div class="collection-item">📝 第23讲 概率初步 (443.2M+2.7M)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 二、奥数思维全年班系列 -->
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <h3 style="color: #ff6b6b; margin-bottom: 15px;">二、奥数思维全年班系列 (共142课)</h3>
+                    
+                    <div class="teacher-card" style="margin-bottom: 15px;">
+                        <div class="teacher-header">
+                            <div class="teacher-number" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">4年级</div>
+                            <div class="teacher-name">【完结】四年级奥数思维全年</div>
+                        </div>
+                        <p class="content-text">
+                            📹 <strong>40节课程</strong> | 📝 配套PDF讲义 | 📦 共44个文件（上下两册）
+                        </p>
+                        <div class="links" style="margin: 15px 0;">
+                            <a href="https://pan.baidu.com/s/1M8idU2OJf4kFh324cvCE8g?pwd=8qmn#list/path=%2Fsharelink3813879060-261895595427083%2F%E5%AE%87%E7%A5%9E%E5%B0%8F%E5%AD%A6%E5%A5%A5%E6%95%B0%2F05.%E3%80%90%E5%AE%8C%E7%BB%93%E3%80%91%E5%9B%9B%E5%B9%B4%E7%BA%A7%E5%A5%A5%E6%95%B0%E6%80%9D%E7%BB%B4%E5%85%A8%E5%B9%B4%E3%80%9040%E8%AF%BE%20%E8%A7%86%E9%A2%91%2BPDF%E3%80%91&parentPath=%2Fsharelink3813879060-261895595427083" target="_blank" class="link-btn">
+                                🔗 直达四年级思维全年班
+                            </a>
+                        </div>
+                        <p class="content-text" style="color: #666; font-size: 0.95em;">
+                            💡 <strong>内容说明：</strong>包含上下两册完整课程，覆盖全年知识点，系统化学习奥数思维
+                        </p>
+                    </div>
+                    
+                    <div class="teacher-card" style="margin-bottom: 15px;">
+                        <div class="teacher-header">
+                            <div class="teacher-number" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">5年级</div>
+                            <div class="teacher-name">【完结】五年级奥数思维全年S+班(暑秋寒春)</div>
+                        </div>
+                        <p class="content-text">
+                            📹 <strong>54节课程</strong> | 📝 配套PDF讲义 | 📂 4个季度文件夹
+                        </p>
+                        <div class="links" style="margin: 15px 0;">
+                            <a href="https://pan.baidu.com/s/1M8idU2OJf4kFh324cvCE8g?pwd=8qmn#list/path=%2Fsharelink3813879060-261895595427083%2F%E5%AE%87%E7%A5%9E%E5%B0%8F%E5%AD%A6%E5%A5%A5%E6%95%B0%2F06.%E3%80%90%E5%AE%8C%E7%BB%93%E3%80%91%E4%BA%94%E5%B9%B4%E7%BA%A7%E5%A5%A5%E6%95%B0%E6%80%9D%E7%BB%B4%E5%85%A8%E5%B9%B4S%2B%E7%8F%AD%EF%BC%88%E6%9A%91%E7%A7%8B%E5%AF%92%E6%98%A5%EF%BC%89%E3%80%9054%E8%AF%BE%20%E8%A7%86%E9%A2%91%2BPDF%E3%80%91&parentPath=%2Fsharelink3813879060-261895595427083" target="_blank" class="link-btn">
+                                🔗 直达五年级思维全年S+班
+                            </a>
+                        </div>
+                        <button class="toggle-btn" onclick="toggleCollection('grade5full')">
+                            <span id="icongrade5full">▶</span> 查看子文件夹结构
+                        </button>
+                        <div id="grade5full" class="collection-content">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; padding: 10px;">
+                                <div class="collection-item">📁 01.【暑假】宇神五年级暑假S+班合集</div>
+                                <div class="collection-item">📁 02.【秋季】宇神五年级秋季S+班合集</div>
+                                <div class="collection-item">📁 03.【寒假】宇神五年级寒假S+班合集</div>
+                                <div class="collection-item">📁 04.【春季】宇神五年级春季S+班合集</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="teacher-card" style="margin-bottom: 15px;">
+                        <div class="teacher-header">
+                            <div class="teacher-number" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">6年级</div>
+                            <div class="teacher-name">【完结】六年级奥数思维全年S+班(暑秋寒春)</div>
+                        </div>
+                        <p class="content-text">
+                            📹 <strong>48节课程</strong> | 📝 配套PDF讲义 | 📂 4个季度文件夹
+                        </p>
+                        <div class="links" style="margin: 15px 0;">
+                            <a href="https://pan.baidu.com/s/1M8idU2OJf4kFh324cvCE8g?pwd=8qmn#list/path=%2Fsharelink3813879060-261895595427083%2F%E5%AE%87%E7%A5%9E%E5%B0%8F%E5%AD%A6%E5%A5%A5%E6%95%B0%2F07.%E3%80%90%E5%AE%8C%E7%BB%93%E3%80%91%E5%85%AD%E5%B9%B4%E7%BA%A7%E5%A5%A5%E6%95%B0%E6%80%9D%E7%BB%B4%E5%85%A8%E5%B9%B4S%2B%E7%8F%AD%EF%BC%88%E6%9A%91%E7%A7%8B%E5%AF%92%E6%98%A5%EF%BC%89%E3%80%9048%E8%AF%BE%20%E8%A7%86%E9%A2%91%2BPDF%E3%80%91&parentPath=%2Fsharelink3813879060-261895595427083" target="_blank" class="link-btn">
+                                🔗 直达六年级思维全年S+班
+                            </a>
+                        </div>
+                        <button class="toggle-btn" onclick="toggleCollection('grade6full')">
+                            <span id="icongrade6full">▶</span> 查看子文件夹结构
+                        </button>
+                        <div id="grade6full" class="collection-content">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; padding: 10px;">
+                                <div class="collection-item">📁 01.六年级暑假S+班</div>
+                                <div class="collection-item">📁 02.六年级秋季S+班</div>
+                                <div class="collection-item">📁 03.六年级寒假S+班</div>
+                                <div class="collection-item">📁 04.六年级春季S+班</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 三、专题模块系列 -->
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <h3 style="color: #4ecdc4; margin-bottom: 15px;">三、专题模块系列 (共48课)</h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                        <div class="teacher-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; cursor: pointer;" onclick="window.open('https://pan.baidu.com/s/1M8idU2OJf4kFh324cvCE8g?pwd=8qmn#list/path=%2Fsharelink3813879060-261895595427083%2F%E5%AE%87%E7%A5%9E%E5%B0%8F%E5%AD%A6%E5%A5%A5%E6%95%B0%2F08.%E3%80%90%E5%AE%8C%E7%BB%93%E3%80%91%E5%AE%87%E7%A5%9E-%E5%B0%8F%E5%AD%A6%E5%A5%A5%E6%95%B0%EF%BC%9A%E6%95%B0%E8%AE%BA%E6%A8%A1%E5%9D%97%E3%80%9018%E8%AF%BE%20%E8%A7%86%E9%A2%91%2BPDF%E3%80%91&parentPath=%2Fsharelink3813879060-261895595427083', '_blank')">
+                            <h4 style="color: white; margin-bottom: 10px; font-size: 1.2em;">📐 数论模块</h4>
+                            <p style="margin-bottom: 10px;"><strong>18节课程</strong></p>
+                            <p style="font-size: 0.9em; line-height: 1.6;">质数、因数、整除、余数等数论知识</p>
+                            <div style="margin-top: 10px; padding: 8px; background: rgba(255,255,255,0.2); border-radius: 5px; text-align: center; font-size: 0.9em;">
+                                点击直达课程 →
+                            </div>
+                        </div>
+                        
+                        <div class="teacher-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; cursor: pointer;" onclick="window.open('https://pan.baidu.com/s/1M8idU2OJf4kFh324cvCE8g?pwd=8qmn#list/path=%2Fsharelink3813879060-261895595427083%2F%E5%AE%87%E7%A5%9E%E5%B0%8F%E5%AD%A6%E5%A5%A5%E6%95%B0%2F09.%E3%80%90%E5%AE%8C%E7%BB%93%E3%80%91%E5%AE%87%E7%A5%9E-%E5%B0%8F%E5%AD%A6%E5%A5%A5%E6%95%B0%EF%BC%9A%E8%A1%8C%E7%A8%8B%E4%B8%93%E9%A2%98%E3%80%9015%E8%AF%BE%20%E8%A7%86%E9%A2%91%2BPDF%E3%80%91&parentPath=%2Fsharelink3813879060-261895595427083', '_blank')">
+                            <h4 style="color: white; margin-bottom: 10px; font-size: 1.2em;">🚗 行程专题</h4>
+                            <p style="margin-bottom: 10px;"><strong>15节课程</strong></p>
+                            <p style="font-size: 0.9em; line-height: 1.6;">相遇、追及、流水行船、环形跑道</p>
+                            <div style="margin-top: 10px; padding: 8px; background: rgba(255,255,255,0.2); border-radius: 5px; text-align: center; font-size: 0.9em;">
+                                点击直达课程 →
+                            </div>
+                        </div>
+                        
+                        <div class="teacher-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; cursor: pointer;" onclick="window.open('https://pan.baidu.com/s/1M8idU2OJf4kFh324cvCE8g?pwd=8qmn#list/path=%2Fsharelink3813879060-261895595427083%2F%E5%AE%87%E7%A5%9E%E5%B0%8F%E5%AD%A6%E5%A5%A5%E6%95%B0%2F10.%E3%80%90%E5%AE%8C%E7%BB%93%E3%80%91%E5%AE%87%E7%A5%9E-%E5%B0%8F%E5%AD%A6%E5%A5%A5%E6%95%B0%EF%BC%9A%E6%96%B9%E7%A8%8B%E4%BD%93%E7%B3%BB%E3%80%9010%E8%AF%BE%20%E8%A7%86%E9%A2%91%2BPDF%E3%80%91&parentPath=%2Fsharelink3813879060-261895595427083', '_blank')">
+                            <h4 style="color: white; margin-bottom: 10px; font-size: 1.2em;">📊 方程体系</h4>
+                            <p style="margin-bottom: 10px;"><strong>10节课程</strong></p>
+                            <p style="font-size: 0.9em; line-height: 1.6;">一元、二元方程组应用</p>
+                            <div style="margin-top: 10px; padding: 8px; background: rgba(255,255,255,0.2); border-radius: 5px; text-align: center; font-size: 0.9em;">
+                                点击直达课程 →
+                            </div>
+                        </div>
+                        
+                        <div class="teacher-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; cursor: pointer;" onclick="window.open('https://pan.baidu.com/s/1M8idU2OJf4kFh324cvCE8g?pwd=8qmn#list/path=%2Fsharelink3813879060-261895595427083%2F%E5%AE%87%E7%A5%9E%E5%B0%8F%E5%AD%A6%E5%A5%A5%E6%95%B0%2F11.%E3%80%90%E5%AE%8C%E7%BB%93%E3%80%91%E5%AE%87%E7%A5%9E-%E5%B0%8F%E5%AD%A6%E5%A5%A5%E6%95%B0%EF%BC%9A%E5%87%A0%E4%BD%95%E6%A8%A1%E5%9E%8B%E3%80%905%E8%AF%BE%20%E8%A7%86%E9%A2%91%2BPDF%E3%80%91&parentPath=%2Fsharelink3813879060-261895595427083', '_blank')">
+                            <h4 style="color: white; margin-bottom: 10px; font-size: 1.2em;">📏 几何模型</h4>
+                            <p style="margin-bottom: 10px;"><strong>5节课程</strong></p>
+                            <p style="font-size: 0.9em; line-height: 1.6;">面积计算、立体图形模型</p>
+                            <div style="margin-top: 10px; padding: 8px; background: rgba(255,255,255,0.2); border-radius: 5px; text-align: center; font-size: 0.9em;">
+                                点击直达课程 →
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 四、总复习与冲刺系列 -->
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <h3 style="color: #ff6348; margin-bottom: 15px;">四、总复习与冲刺系列</h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <a href="https://pan.baidu.com/s/1M8idU2OJf4kFh324cvCE8g?pwd=8qmn#list/path=%2Fsharelink3813879060-261895595427083%2F%E5%AE%87%E7%A5%9E%E5%B0%8F%E5%AD%A6%E5%A5%A5%E6%95%B0%2F12.%E3%80%90%E5%AE%8C%E7%BB%93%E3%80%91%E5%AE%87%E7%A5%9E-%E5%B0%8F%E5%AD%A6%E5%A5%A5%E6%95%B0%E4%B8%83%E5%A4%A7%E6%A8%A1%E5%9D%97%E4%BD%93%E7%B3%BB%E6%80%BB%E5%A4%8D%E4%B9%A0A%2B%E7%8F%AD&parentPath=%2Fsharelink3813879060-261895595427083" target="_blank" class="collection-item" style="text-decoration: none; cursor: pointer; transition: transform 0.3s;">
+                            📚 七大模块体系总复习A+班
+                        </a>
+                        <a href="https://pan.baidu.com/s/1M8idU2OJf4kFh324cvCE8g?pwd=8qmn#list/path=%2Fsharelink3813879060-261895595427083%2F%E5%AE%87%E7%A5%9E%E5%B0%8F%E5%AD%A6%E5%A5%A5%E6%95%B0%2F13.%E3%80%90%E5%AE%8C%E7%BB%93%E3%80%91%E5%AE%87%E7%A5%9E-%E5%B0%8F%E5%AD%A6%E5%A5%A5%E6%95%B0%E4%B8%83%E5%A4%A7%E6%A8%A1%E5%9D%97%E4%BD%93%E7%B3%BB%E6%80%BB%E5%A4%8D%E4%B9%A0S%2B%E7%8F%AD&parentPath=%2Fsharelink3813879060-261895595427083" target="_blank" class="collection-item" style="text-decoration: none; cursor: pointer; transition: transform 0.3s;">
+                            🏆 七大模块体系总复习S+班
+                        </a>
+                        <a href="https://pan.baidu.com/s/1M8idU2OJf4kFh324cvCE8g?pwd=8qmn#list/path=%2Fsharelink3813879060-261895595427083%2F%E5%AE%87%E7%A5%9E%E5%B0%8F%E5%AD%A6%E5%A5%A5%E6%95%B0%2F14.%E3%80%90%E5%AE%8C%E7%BB%93%E3%80%91%E5%AE%87%E7%A5%9E-%E5%B0%8F%E5%8D%87%E5%88%9D%E5%88%86%E7%8F%AD%E8%80%83%E5%86%B2%E5%88%BA%E7%8F%AD%E3%80%907%E8%AF%BE%20%E8%A7%86%E9%A2%91%2BPDF%E3%80%91&parentPath=%2Fsharelink3813879060-261895595427083" target="_blank" class="collection-item" style="text-decoration: none; cursor: pointer; transition: transform 0.3s;">
+                            🎯 小升初分班考冲刺班 (7课)
+                        </a>
+                        <a href="https://pan.baidu.com/s/1M8idU2OJf4kFh324cvCE8g?pwd=8qmn#list/path=%2Fsharelink3813879060-261895595427083%2F%E5%AE%87%E7%A5%9E%E5%B0%8F%E5%AD%A6%E5%A5%A5%E6%95%B0%2F15.%E3%80%90%E5%AE%8C%E7%BB%93%E3%80%91%E5%AE%87%E7%A5%9E-%E5%8C%97%E4%BA%AC18%E6%89%80%E5%90%8D%E6%A0%A1%E5%B0%8F%E5%8D%87%E5%88%9D%E8%80%83%E8%AF%95%E7%9C%9F%E9%A2%98%E5%8D%B7%E8%AE%B2%E8%A7%A3%E3%80%9018%E8%AF%BE%20%E8%A7%86%E9%A2%91%2BPDF%E3%80%91&parentPath=%2Fsharelink3813879060-261895595427083" target="_blank" class="collection-item" style="text-decoration: none; cursor: pointer; transition: transform 0.3s;">
+                            🏫 北京18所名校小升初真题讲解 (18课)
+                        </a>
+                        <a href="https://pan.baidu.com/s/1M8idU2OJf4kFh324cvCE8g?pwd=8qmn#list/path=%2Fsharelink3813879060-261895595427083%2F%E5%AE%87%E7%A5%9E%E5%B0%8F%E5%AD%A6%E5%A5%A5%E6%95%B0%2F16.%E3%80%90%E5%AE%8C%E7%BB%93%E3%80%91%E5%AE%87%E7%A5%9E-%E5%85%AB%E5%B0%91%E5%85%AB%E7%B4%A0%E7%A5%9E%E6%B5%8B%E5%86%B2%E5%88%BA%E7%8F%AD%EF%BC%88%E5%88%9D%E8%AF%95%2B%E5%A4%8D%E8%AF%95%EF%BC%89%E3%80%90%E8%A7%86%E9%A2%91%2BPDF%E3%80%91&parentPath=%2Fsharelink3813879060-261895595427083" target="_blank" class="collection-item" style="text-decoration: none; cursor: pointer; transition: transform 0.3s;">
+                            ⭐ 八少八素神测冲刺班(初试+复试)
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="teacher-card">
+                <h2 style="color: #667eea; margin-bottom: 20px;">📖 学习路径推荐</h2>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                    <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 20px; border-radius: 10px; color: white;">
+                        <h4 style="color: white; margin-bottom: 15px; font-size: 1.2em;">🎒 三年级学生</h4>
+                        <p style="line-height: 1.8;">
+                            1️⃣ 从"三年级高思导引刷题班"开始<br>
+                            2️⃣ 基础扎实后学习相应专题模块<br>
+                            3️⃣ 循序渐进，打好基础
+                        </p>
+                    </div>
+                    
+                    <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 20px; border-radius: 10px; color: white;">
+                        <h4 style="color: white; margin-bottom: 15px; font-size: 1.2em;">📚 四年级学生</h4>
+                        <p style="line-height: 1.8;">
+                            1️⃣ "四年级高思导引刷题班"<br>
+                            2️⃣ "四年级奥数思维全年班"<br>
+                            3️⃣ 配合专题模块强化训练
+                        </p>
+                    </div>
+                    
+                    <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); padding: 20px; border-radius: 10px; color: white;">
+                        <h4 style="color: white; margin-bottom: 15px; font-size: 1.2em;">🎯 五年级学生</h4>
+                        <p style="line-height: 1.8;">
+                            1️⃣ "五年级高思导引刷题班"<br>
+                            2️⃣ "五年级奥数思维全年S+班"<br>
+                            3️⃣ 重点学习数论、行程、几何专题
+                        </p>
+                    </div>
+                    
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; color: white;">
+                        <h4 style="color: white; margin-bottom: 15px; font-size: 1.2em;">🏆 六年级学生</h4>
+                        <p style="line-height: 1.8;">
+                            1️⃣ "六年级高思导引+思维全年班"<br>
+                            2️⃣ 七大模块体系总复习(A+/S+)<br>
+                            3️⃣ 小升初冲刺+真题讲解<br>
+                            4️⃣ (如需要)八少八素神测冲刺
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="teacher-card">
+                <h2 style="color: #667eea; margin-bottom: 20px;">📂 使用指南</h2>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                    <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #28a745;">
+                        <h4 style="color: #28a745; margin-bottom: 10px;">📖 访问步骤</h4>
+                        <p style="color: #666; line-height: 1.8;">
+                            1️⃣ 点击上方"访问百度网盘链接"<br>
+                            2️⃣ 输入提取码：<strong>8qmn</strong><br>
+                            3️⃣ 进入"宇神小学奥数"文件夹<br>
+                            4️⃣ 选择对应年级和系列<br>
+                            5️⃣ 转存到自己网盘或在线观看
+                        </p>
+                    </div>
+                    
+                    <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #ff9800;">
+                        <h4 style="color: #ff9800; margin-bottom: 10px;">💡 常见问题</h4>
+                        <p style="color: #666; line-height: 1.8;">
+                            <strong>Q：视频能在线看吗？</strong><br>
+                            A：可以,百度网盘支持在线预览MP4视频<br><br>
+                            <strong>Q：PDF讲义在哪里？</strong><br>
+                            A：每节课视频旁边都有对应PDF文件
+                        </p>
+                    </div>
+                    
+                    <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #667eea;">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">🎯 学习建议</h4>
+                        <p style="color: #666; line-height: 1.8;">
+                            • 先看视频理解概念<br>
+                            • 对照PDF讲义做笔记<br>
+                            • 课后完成讲义中的练习<br>
+                            • 不懂的地方反复观看<br>
+                            • 建议每天学习1-2讲
+                        </p>
+                    </div>
+                    
+                    <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #dc3545;">
+                        <h4 style="color: #dc3545; margin-bottom: 10px;">⚡ 重要提示</h4>
+                        <p style="color: #666; line-height: 1.8;">
+                            • 资源仅供个人学习使用<br>
+                            • 请勿用于商业用途<br>
+                            • 如链接失效请及时反馈<br>
+                            • 建议及时转存避免失效
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="teacher-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+                <h2 style="color: white; margin-bottom: 15px;">📌 资源更新说明</h2>
+                <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;">
+                    <p style="line-height: 1.8; font-size: 1.05em;">
+                        本网盘资源会不定期更新，建议收藏此页面以便随时查看最新资源。如果您有优质学习资料希望分享，欢迎联系管理员。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showSection(sectionId) {
+            // 隐藏所有内容区域
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // 移除所有标签的激活状态
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 显示选中的内容区域
+            document.getElementById(sectionId).classList.add('active');
+            
+            // 激活对应的标签
+            event.target.classList.add('active');
+        }
+        
+        function toggleCollection(collectionId) {
+            const collection = document.getElementById(collectionId);
+            let iconId = 'icon' + collectionId;
+            
+            // For grade collections, the icon id pattern is different
+            if (collectionId.startsWith('grade')) {
+                iconId = 'icongrade' + collectionId.replace('grade', '');
+            } else if (collectionId.startsWith('collection')) {
+                iconId = 'icon' + collectionId.replace('collection', '');
+            }
+            
+            const icon = document.getElementById(iconId);
+            
+            if (collection.classList.contains('show')) {
+                collection.classList.remove('show');
+                if (icon) icon.textContent = '▶';
+            } else {
+                collection.classList.add('show');
+                if (icon) icon.textContent = '▼';
+            }
+        }
+    </script>
+</body>
+</html>

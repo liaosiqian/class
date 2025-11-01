@@ -1,0 +1,28 @@
+# Python文件
+*.py
+*.pyc
+__pycache__/
+
+# 日志文件
+*.log
+
+# 临时文件
+*.bak
+*~
+.DS_Store
+
+# 文档（保留README相关）
+更新说明.md
+整合完成说明.md
+链接修复说明.md
+宇神小学奥数资源目录汇总.md
+
+# 其他数据文件
+baidu_pan_files_full.json
+baidu_pan_tree.txt
+
+# 部署脚本（镜像内不需要）
+deploy.sh
+local-test.sh
+deployment-summary.sh
+docker-compose.yml

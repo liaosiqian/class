@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  class-website:
+    build: .
+    container_name: class-learning-site
+    ports:
+      - "8088:80"  # 使用8088端口，避免常用端口冲突
+    restart: unless-stopped
+    networks:
+      - class-network
+    labels:
+      - "app=class-learning"
+      - "version=1.0"
+
+networks:
+  class-network:
+    driver: bridge
+
